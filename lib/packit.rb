@@ -10,6 +10,10 @@ module Packit
     def size
       0
     end
+
+    def call
+      nil
+    end
   end
 
   class Record
@@ -17,13 +21,21 @@ module Packit
       @fields = []
     end
 
+    # TODO: test me
+    def call
+      yield self if block_given?
+      
+      # I forgot what happens here
+      to_a.map { | field | field.call }
+    end
+
     def add name, args = {}
       @fields << Field.new( name.to_sym, args )
       self
     end
 
-    def bring holder
-      @fields += Backend.find( holder ).to_a
+    def bring record
+      @fields += Backend.find( record ).to_a
       self
     end
 
@@ -77,6 +89,12 @@ module Packit
   class << self
     def [] name
       Backend.find name
+    end
+
+    # TODO: test me
+    def call name, &block
+      record = Backend.find name
+      name.call &block
     end
   end
 end
