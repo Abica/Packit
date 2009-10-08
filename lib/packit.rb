@@ -40,7 +40,7 @@ module Packit
     end
 
     def size
-      @fields.inject( 0 ) { | sum, f | sum + f }
+      @fields.inject( 0 ) { | sum, f | sum + f.size }
     end
 
     def to_a
@@ -94,7 +94,7 @@ module Packit
     # TODO: test me
     def call name, &block
       record = Backend.find name
-      name.call &block
+      record.call &block
     end
   end
 end
